@@ -44,6 +44,7 @@ class ListTreeView extends StatefulWidget {
     this.removeBottom = true,
     this.reverse = false,
     this.padding = const EdgeInsets.all(0),
+    this.scrollController,
   }) : assert(controller != null, "The TreeViewController can't be empty");
 
   final IndexedBuilder itemBuilder;
@@ -55,6 +56,7 @@ class ListTreeView extends StatefulWidget {
   final bool removeTop;
   final bool reverse;
   final EdgeInsetsGeometry padding;
+  final ScrollController scrollController;
 
   /// If `false` you have to explicitly expand or collapse nodes.
   ///
@@ -86,9 +88,7 @@ class _ListTreeViewState extends State<ListTreeView> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.controller == null ||
-        widget.controller!.data == null ||
-        widget.controller!.data!.length == 0) {
+    if (widget.controller == null || widget.controller!.data == null || widget.controller!.data!.length == 0) {
       return Center(
         child: Text(''),
       );
@@ -104,21 +104,19 @@ class _ListTreeViewState extends State<ListTreeView> {
             padding: widget.padding,
             reverse: widget.reverse,
             shrinkWrap: widget.shrinkWrap,
+            controller: widget.scrollController,
             itemBuilder: (BuildContext context, int index) {
 //        int num = widget.controller.numberOfVisibleChild();
               ///The [TreeNode] associated with the current item
               TreeNode treeNode = widget.controller!.treeNodeOfIndex(index);
 
               ///The level of the current item
-              treeNode.item!.level =
-                  widget.controller!.levelOfNode(treeNode.item);
-              treeNode.item!.isExpand =
-                  widget.controller!.isExpanded(treeNode.item);
+              treeNode.item!.level = widget.controller!.levelOfNode(treeNode.item);
+              treeNode.item!.isExpand = widget.controller!.isExpanded(treeNode.item);
               treeNode.item!.index = index;
               NodeData? parent = widget.controller!.parentOfItem(treeNode.item);
               if (parent != null && parent.children.length > 0) {
-                treeNode.item!.indexInParent =
-                    parent.children.indexOf(treeNode.item!);
+                treeNode.item!.indexInParent = parent.children.indexOf(treeNode.item!);
               } else {
                 treeNode.item!.indexInParent = 0;
               }
