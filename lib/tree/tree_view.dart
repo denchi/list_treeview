@@ -35,10 +35,7 @@ import 'tree_define.dart';
 class ListTreeView extends StatefulWidget {
   ListTreeView({
     required this.itemBuilder,
-    this.onTap,
-    this.onLongPress,
     this.controller,
-    this.toggleNodeOnTap = true,
     this.shrinkWrap = false,
     this.removeTop = true,
     this.removeBottom = true,
@@ -48,20 +45,13 @@ class ListTreeView extends StatefulWidget {
   }) : assert(controller != null, "The TreeViewController can't be empty");
 
   final IndexedBuilder itemBuilder;
-  final PressCallback? onLongPress;
   final TreeViewController? controller;
-  final PressCallback? onTap;
   final bool shrinkWrap;
   final bool removeBottom;
   final bool removeTop;
   final bool reverse;
   final EdgeInsetsGeometry padding;
-  final ScrollController scrollController;
-
-  /// If `false` you have to explicitly expand or collapse nodes.
-  ///
-  /// This can be done using the [TreeViewControlle].`expandOrCollapse()` method.
-  final bool toggleNodeOnTap;
+  final ScrollController? scrollController;
 
   @override
   State<StatefulWidget> createState() {
@@ -122,24 +112,7 @@ class _ListTreeViewState extends State<ListTreeView> {
               }
 
               ///Your event is passed through the [Function] with the relevant data
-              return InkWell(
-                onLongPress: () {
-                  if (widget.onLongPress != null) {
-                    widget.onLongPress!(treeNode.item!);
-                  }
-                },
-                onTap: () {
-                  if (widget.toggleNodeOnTap) {
-                    itemClick(index);
-                  }
-                  if (widget.onTap != null) {
-                    widget.onTap!(treeNode.item!);
-                  }
-                },
-                child: Container(
-                  child: widget.itemBuilder(context, treeNode.item!),
-                ),
-              );
+              return widget.itemBuilder(context, treeNode.item!);
             },
             itemCount: widget.controller?.numberOfVisibleChild(),
           )),
